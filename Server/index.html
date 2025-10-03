@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>📷 AI Food Calorie Estimator</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/pose-detection"></script>
+  <script src="https://cdn.jsdelivr.net/npm/u2net-browser@1.0.4/dist/u2net.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>📷 AI Food Calorie Estimator</h1>
+    <p>Take a photo, speak the food name, and get calorie estimate with portion size!</p>
+
+    <!-- 📱 Mobile Camera -->
+    <input type="file" id="imageUpload" accept="image/*" capture="environment" />
+    <img id="preview" src="" alt="Preview" style="max-width:100%; margin-top:10px; display:none;" />
+
+    <!-- 🔊 Voice Input -->
+    <button id="voiceBtn">🎤 Say Food Name</button>
+    <input type="text" id="manualFood" placeholder="Or type: grilled salmon" />
+
+    <button id="analyzeBtn" disabled>🔍 Analyze Food</button>
+
+    <!-- Results -->
+    <div id="result"></div>
+
+    <!-- 📊 Dashboard -->
+    <button onclick="showDashboard()" style="margin-top:20px;">📊 Daily Dashboard</button>
+    <div id="dashboard" style="display:none; margin-top:20px;">
+      <h2>Your Daily Intake</h2>
+      <canvas id="calorieChart" height="100"></canvas>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
