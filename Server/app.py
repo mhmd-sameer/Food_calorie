@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify, send_from_directory
-
+from dotenv import load_dotenv
+load_dotenv()
 from flask_cors import CORS
 from clarifai.client.model import Model
 from clarifai.client.input import Inputs
@@ -7,6 +8,7 @@ from clarifai_grpc.grpc.api.status import status_code_pb2
 from groq import Groq
 import base64
 import os
+import traceback
 import requests
 app = Flask(__name__)
 CORS(app)
@@ -14,7 +16,7 @@ CORS(app)
 # Load API keys
 CLARIFAI_API_KEY = os.getenv("CLARIFAI_API_KEY")
 SPOONACULAR_API_KEY = os.getenv("SPOONACULAR_API_KEY")
-GROQ_API_KEY = os.getenv("GROQ_API_KEY","groq_api")
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
 # clarifai_model = Model("clarifai/main/models/food-item-recognition/versions/dfebc169854e429086aceb8368662641", api_key=CLARIFAI_API_KEY)
 groq_client = Groq(api_key=GROQ_API_KEY)

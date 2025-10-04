@@ -31,7 +31,7 @@ const CalorieCalc = () => {
         setIsLoading(true);
 
         try {
-            const response = await axios.post("https://apparent-wolf-obviously.ngrok-free.app/predict", formData, {
+            const response = await axios.post("https://poachier-shiftable-robert.ngrok-free.dev/predict", formData, {
                 headers: { "Content-Type": "multipart/form-data" }
             });
 
