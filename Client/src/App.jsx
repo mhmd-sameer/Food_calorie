@@ -8,6 +8,8 @@ import { AuthProvider, useAuth } from "../src/Components/AuthContext";
 import PrivateRoute from "../src/Components/PrivateRoute";
 import Profile from "../src/Components/Profile";
 import { Navigate } from "react-router-dom";
+import Home from "../src/Components/Home";
+import Footer from "../src/Components/Footer";
 
 
 const AppContent = () => {
@@ -37,6 +39,13 @@ const AppContent = () => {
 
             <div className="hidden md:flex space-x-8 items-center">
               <Link
+                to="/"
+                className="flex items-center space-x-2 text-slate-700 hover:text-blue-600 font-semibold transition-colors duration-300 relative group"
+              >
+                <span>Home</span>
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
+              </Link>
+              <Link
                 to="/calorie"
                 className="flex items-center space-x-2 text-slate-700 hover:text-blue-600 font-semibold transition-colors duration-300 relative group"
               >
@@ -44,14 +53,14 @@ const AppContent = () => {
                 <span>Tracker</span>
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
               </Link>
-              <Link
+              {/* <Link
                 to="/chatbot"
                 className="flex items-center space-x-2 text-slate-700 hover:text-blue-600 font-semibold transition-colors duration-300 relative group"
               >
                 <FaRobot className="text-blue-500 group-hover:rotate-12 transition-transform" />
                 <span>AI Coach</span>
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
-              </Link>
+              </Link> */}
 
               {user ? (
                 <>
@@ -100,11 +109,11 @@ const AppContent = () => {
         </div>
       </nav>
 
-      <div className="pt-28 pb-12 px-4 sm:px-6 lg:px-8 min-h-screen">
+      <div className="pt-28 pb-12 px-4 sm:px-6 lg:px-8 flex-grow">
         <Routes location={location} key={location.pathname}>
           <Route
             path="/"
-            element={user ? <Navigate to="/calorie" /> : <Navigate to="/login" />}
+            element={<Home />}
           />
 
           <Route path="/login" element={<Login />} />
@@ -138,6 +147,7 @@ const AppContent = () => {
           />
         </Routes>
       </div>
+      <Footer />
     </div>
   );
 };
