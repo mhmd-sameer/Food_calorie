@@ -4,6 +4,8 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const cors = require("cors");
+const User = require("./models/User");
+
 
 require("dotenv").config();
 
@@ -18,10 +20,7 @@ mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.error("MongoDB connection error:", err));
 
-// User Schema
 
-
-const User = mongoose.model("User", userSchema);
 
 // JWT Middleware
 const authenticateToken = (req, res, next) => {
@@ -59,8 +58,10 @@ app.post("/api/register", async (req, res) => {
     const token = jwt.sign({ id: user._id, name: user.name }, process.env.JWT_SECRET, { expiresIn: "1d" });
     res.status(201).json({ token, user: { id: user._id, name: user.name, email: user.email } });
   } catch (err) {
+    console.log("REGISTER ERROR:", err);
     res.status(500).json({ message: "Server error", error: err.message });
-  }
+}
+
 });
 
 // Login route
@@ -90,6 +91,37 @@ app.get("/api/profile", authenticateToken, async (req, res) => {
     const user = await User.findById(req.user.id).select("-password"); // exclude password
     if (!user) return res.status(404).json({ message: "User not found" });
     res.json(user);
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+});
+
+// Save Food Log route (protected)
+app.post("/api/foodlog", authenticateToken, async (req, res) => {
+  try {
+    const { food, calories, protein_g, carbs_g, fat_g, sugar_rise, portion_g, date } = req.body;
+    
+    if (!food) {
+       return res.status(400).json({ message: "Food name is required" });
+    }
+
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // Push new log to the start of the array
+    user.foodLogs.push({
+      food,
+      calories: calories || 0,
+      protein_g: protein_g || 0,
+      carbs_g: carbs_g || 0,
+      fat_g: fat_g || 0,
+      sugar_rise: sugar_rise || 0,
+      portion_g: portion_g || 0,
+      date: date ? new Date(date) : new Date()
+    });
+
+    await user.save();
+    res.status(201).json({ message: "Food logged successfully", foodLogs: user.foodLogs });
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
   }

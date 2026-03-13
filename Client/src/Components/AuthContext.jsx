@@ -1,7 +1,9 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
-const AuthContext = createContext();
+export const AuthContext = createContext();
+
 
 export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
@@ -9,15 +11,33 @@ export const AuthProvider = ({ children }) => {
 
   // Persist user from localStorage on refresh
   useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("user"));
-    if (storedUser) setUser(storedUser);
-  }, []);
+  try {
+    const storedUser = localStorage.getItem("user");
+    const storedToken = localStorage.getItem("token");
 
-  const login = (userData) => {
+    if (storedUser && storedToken) {
+      setUser(JSON.parse(storedUser));
+      axios.defaults.headers.common["Authorization"] = `Bearer ${storedToken}`;
+    }
+  } catch (error) {
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+  }
+}, []);
+
+
+  const login = (userData, token) => {
     setUser(userData);
+
     localStorage.setItem("user", JSON.stringify(userData));
+    localStorage.setItem("token", token);
+
+    axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+
     navigate("/calorie");
   };
+
+
 
   const logout = () => {
     setUser(null);
@@ -33,4 +53,7 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+  return useContext(AuthContext);
+};
+
